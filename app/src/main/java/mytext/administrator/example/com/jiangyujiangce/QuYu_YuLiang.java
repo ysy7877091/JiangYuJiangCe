@@ -40,6 +40,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
     private HorizontalBarChart barChart;
     private MyProgressDialog progressDialog=null;
     private List<JiangYuShuJu> list =new ArrayList<>();
+    private String quYu_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +56,17 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
         iv_fanhui_icon1 = (ImageView) findViewById(R.id.iv_fanhui_icon1);
         iv_fanhui_icon1.setOnClickListener(this);
         tv_quYu_name = (TextView) findViewById(R.id.tv_quYu_Name);
-        String quYu_Name = getIntent().getStringExtra("Name");
-        tv_quYu_name.setText(quYu_Name);
-        if(quYu_Name.equals("全区")){
+
+        startTime = getIntent().getStringExtra("StartTime");
+        endTime = getIntent().getStringExtra("EndTime");
+        quYu_name = getIntent().getStringExtra("Name");
+        tv_quYu_name.setText(quYu_name);
+        if(quYu_name.equals("全区")){
             progressDialog = new MyProgressDialog(QuYu_YuLiang.this,false,"正在加载中...");
             new Thread(Get_CheckAllRainFallHistory_List).start();
 
         }
 
-        startTime = getIntent().getStringExtra("StartTime");
-        endTime = getIntent().getStringExtra("EndTime");
 
 
     }
@@ -77,9 +79,9 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
     Runnable Get_CheckAllRainFallHistory_List = new Runnable() {
         @Override
         public void run() {
-
             try {
                 // 命名空间
+
                 String nameSpace = "http://tempuri.org/";
                 // 调用的方法名称
                 String methodName = "Get_CheckAllRainFallHistory_List";
@@ -100,7 +102,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 envelope.dotNet = true;
                 envelope.setOutputSoapObject(rpc);
 
-                HttpTransportSE ht = new HttpTransportSE(endPoint,20000);
+                HttpTransportSE ht = new HttpTransportSE(endPoint,10000);
                 ht.debug = true;
                 Log.e("warn", "4444");
                 try {
