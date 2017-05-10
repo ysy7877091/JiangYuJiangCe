@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".ZhuCe"></activity>
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".QuYu_YuLiang"></activity>
     </application>
 
 </manifest>

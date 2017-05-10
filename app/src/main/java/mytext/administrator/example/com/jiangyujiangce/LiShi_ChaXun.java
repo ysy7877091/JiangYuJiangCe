@@ -121,24 +121,28 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                 //当选择默认当前时间时Start_year Start_monthOfYear Start_dayOfMonth 都为null;
 
                 if (state == 0) {
-                    Start = Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日";
-                    sub_StartTime = Start_year + "-" + Start_monthOfYear + "-" + Start_dayOfMonth;//提交到服务器上的时间
-                    tv_startTime1.setText(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
-                    tv_startTime1.setTextSize(18);
-                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
-                    spanBuilder.setSpan(new TextAppearanceSpan(null, 0, 30, null, null), 0, 5, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-                    tv_startTime1.setText(spanBuilder);
-                    tv_startTime1.setTextColor(getResources().getColor(R.color.black));
+
+                        Start = Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日";
+                        sub_StartTime = Start_year + "-" + Start_monthOfYear + "-" + Start_dayOfMonth;//提交到服务器上的时间
+                        tv_startTime1.setText(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
+                        tv_startTime1.setTextSize(18);
+                        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
+                        spanBuilder.setSpan(new TextAppearanceSpan(null, 0, 30, null, null), 0, 5, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                        tv_startTime1.setText(spanBuilder);
+                        tv_startTime1.setTextColor(getResources().getColor(R.color.black));
+
+
                 } else if (state == 1) {
 
-                    end = Start_year + "年" + "" + Start_monthOfYear + "月" + Start_dayOfMonth + "日";
-                    sub_EndTime = Start_year + "-" + Start_monthOfYear + "-" + Start_dayOfMonth;//提交到服务器上的时间
-                    tv_endTime1.setText(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
-                    tv_endTime1.setTextSize(18);
-                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
-                    spanBuilder.setSpan(new TextAppearanceSpan(null, 0, 30, null, null), 0, 5, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-                    tv_endTime1.setText(spanBuilder);
-                    tv_endTime1.setTextColor(getResources().getColor(R.color.black));
+                        end = Start_year + "年" + "" + Start_monthOfYear + "月" + Start_dayOfMonth + "日";
+                        sub_EndTime = Start_year + "-" + Start_monthOfYear + "-" + Start_dayOfMonth;//提交到服务器上的时间
+                        tv_endTime1.setText(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
+                        tv_endTime1.setTextSize(18);
+                        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日");
+                        spanBuilder.setSpan(new TextAppearanceSpan(null, 0, 30, null, null), 0, 5, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                        tv_endTime1.setText(spanBuilder);
+                        tv_endTime1.setTextColor(getResources().getColor(R.color.black));
+
                 } else {
                     Toast.makeText(getApplicationContext(), "应用程序错误", Toast.LENGTH_SHORT).show();
                 }
@@ -153,7 +157,7 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
     private void SelectQuYu() {
-        ProgressDialog = new MyProgressDialog(LiShi_ChaXun.this,false,"注册中...");
+        ProgressDialog = new MyProgressDialog(LiShi_ChaXun.this,false,"加载中...");
         new Thread(networkGetYuLiangInfor).start();
     }
     Runnable networkGetYuLiangInfor = new Runnable() {
@@ -221,7 +225,7 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
             String val = (String) msg.obj;
             Log.e("warn", val);
-            if (val.toString().equals("999999")) {
+            if (val.toString().equals("0")) {
                 cancelDialg();
                 Toast.makeText(getApplicationContext(), "获取雨量信息失败,网络或者服务器异常", Toast.LENGTH_SHORT).show();
             } else {

@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/ksoap2-android-assembly-3.6.1-jar-with-dependencies.jar')
+    compile project(':MPChartLib')
 }
