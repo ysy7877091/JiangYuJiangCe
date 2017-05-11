@@ -32,7 +32,7 @@ import static mytext.administrator.example.com.jiangyujiangce.R.id.tv_startTime;
 /**
  * Created by 王聿鹏 on 2017/5/10.
  * <p>
- * 描述 ：
+ * 描述 ：历史查询
  */
 
 public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListener{
@@ -233,13 +233,13 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                 cancelDialg();
                 String[] objects = val.split("\\|");
                 final String arr_Name[] = new String[objects.length+1];
-                final String arr_ID[] = new String[objects.length];
+                final String arr_ID[] = new String[objects.length+1];
                 for (int i = 0; i < objects.length; i++) {
                     if (objects[i].length() > 0) {
                         String[] values = objects[i].split(",");
                         if (values.length > 1) {
                             arr_Name[i+1] = values[1].toString();
-                            arr_ID[i] = values[0].toString();
+                            arr_ID[i+1] = values[0].toString();
                         }
                     }
                 }
@@ -253,7 +253,7 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                         String val = arr_Name[i];
                         tv_quyu.setText(val);
                         tv_quyu.setTextColor(getResources().getColor(R.color.black));
-                        // ID=arr_ID[i];
+                         ID=arr_ID[i];
                         dialogInterface.dismiss();
                     }
                 });
@@ -304,6 +304,7 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                         intent.putExtra("Name", tv_quyu.getText().toString().trim());
                         intent.putExtra("StartTime", sub_StartTime);
                         intent.putExtra("EndTime", sub_EndTime);
+                        intent.putExtra("ID", ID);
 
                         startActivity(intent);
                     }
