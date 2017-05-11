@@ -210,20 +210,4 @@
            android:id="@+id/registerSubmit"
            android:layout_gravity="center_horizontal"
            android:layout_marginTop="30dp"/>
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:gravity="center"
-          android:layout_marginTop="20dp">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="注册代表同意"/>
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="《开发区降雨监测用户协议》"
-              android:textColor="@color/tj9"/>
-      </LinearLayout>
 </LinearLayout>

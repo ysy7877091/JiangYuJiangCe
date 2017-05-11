@@ -63,6 +63,7 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.lishijilu_layout);
 
+        CommonMethod.setStatuColor(LiShi_ChaXun.this,R.color.white);
         init();
 
     }
