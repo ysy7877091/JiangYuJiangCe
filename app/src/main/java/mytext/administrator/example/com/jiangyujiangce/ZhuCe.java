@@ -2,6 +2,8 @@ package mytext.administrator.example.com.jiangyujiangce;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -76,6 +78,9 @@ public class ZhuCe extends AppCompatActivity implements PublicOneListInterface{
     @Override
     public void onGetDataSuccess(String succmessage) {
         cancelDialg();
+        Message msg =Message.obtain();
+        msg.obj=succmessage;
+        handler.sendMessage(msg);
         Log.e("warn",succmessage);
 
     }
@@ -83,12 +88,18 @@ public class ZhuCe extends AppCompatActivity implements PublicOneListInterface{
     @Override
     public void onGetDataError(String errmessage) {
         cancelDialg();
+        Message msg =Message.obtain();
+        msg.obj=errmessage;
+        handler.sendMessage(msg);
         Log.e("warn",errmessage);
     }
     //请求无数据回调
     @Override
     public void onEmptyData(String Emptymessage) {
         cancelDialg();
+        Message msg =Message.obtain();
+        msg.obj=Emptymessage;
+        handler.sendMessage(msg);
     }
 
     private class ZhuCeListener implements View.OnClickListener{
@@ -183,7 +194,32 @@ public class ZhuCe extends AppCompatActivity implements PublicOneListInterface{
             ProgressDialog=null;
         }
     }
-
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String str =(String)msg.obj;
+            if(str.contains("RETURNNUM")){
+               int index= str.indexOf("RETURNNUM");
+                String result =str.substring(index+1);
+                int index1 = result.indexOf("=");
+                int index2 = result.indexOf(";");
+                String result1=result.substring(index1+1,index2);
+                if(result1.equals("0")){
+                    Toast.makeText(ZhuCe.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    finish();
+                }else if(result1.equals("1")){
+                    Toast.makeText(ZhuCe.this, "验证码错误", Toast.LENGTH_SHORT).show();
+                }else if(result1.equals("2")){
+                    Toast.makeText(ZhuCe.this, "账号已存在", Toast.LENGTH_SHORT).show();
+                }else if(result1.equals("3")){
+                    Toast.makeText(ZhuCe.this, "注册失败，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(ZhuCe.this, "注册失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
     @Override
     protected void onDestroy() {
         super.onDestroy();

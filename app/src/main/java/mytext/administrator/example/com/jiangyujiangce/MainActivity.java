@@ -3,6 +3,8 @@ package mytext.administrator.example.com.jiangyujiangce;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -42,18 +44,27 @@ public class MainActivity extends AppCompatActivity implements PublicOneListInte
     @Override
     public void onGetDataSuccess(String succmessage) {
         cancelDialog();
+        Message msg = Message.obtain();
+        msg.obj = succmessage;
+        handler.sendMessage(msg);
         Log.e("warn",succmessage);
     }
 
     @Override
     public void onGetDataError(String errmessage) {
         cancelDialog();
+        Message msg = Message.obtain();
+        msg.obj = errmessage;
+        handler.sendMessage(msg);
         Log.e("warn",errmessage);
     }
 
     @Override
     public void onEmptyData(String Emptymessage) {
         cancelDialog();
+        Message msg = Message.obtain();
+        msg.obj = Emptymessage;
+        handler.sendMessage(msg);
     }
 
     private class MainActivityListener implements View.OnClickListener{
@@ -104,6 +115,30 @@ public class MainActivity extends AppCompatActivity implements PublicOneListInte
             }
         }
     }
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String str = (String)msg.obj;
+            if(str.contains("RETURNNUM")) {
+                int index = str.indexOf("RETURNNUM");
+                String result = str.substring(index + 1);
+                int index1 = result.indexOf("=");
+                int index2 = result.indexOf(";");
+                String result1 = result.substring(index1 + 1, index2);
+                if (result1.equals("0")) {
+                    Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this,JiangYuMap.class);
+                    startActivity(intent);
+                    finish();
+                } else if (result1.equals("2")) {
+                    Toast.makeText(MainActivity.this, "账号或密码错误", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
     private void cancelDialog(){
         if(ProgressDialog!=null){
             ProgressDialog.dismiss();

@@ -34,6 +34,7 @@ import static android.os.Build.ID;
 public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListener{
 
     private TextView tv_quYu_name;
+
     private ImageView iv_fanhui_icon1;
     private String startTime;
     private String endTime;
