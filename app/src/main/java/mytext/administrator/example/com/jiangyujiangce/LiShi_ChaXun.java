@@ -84,7 +84,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         iv_sanJiao.setOnClickListener(this);
         iv_souSuo.setOnClickListener(this);
         tv_quyu.setOnClickListener(this);
-
     }
 
     private void SelectStartTime(final int state) {
@@ -120,7 +119,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //当选择默认当前时间时Start_year Start_monthOfYear Start_dayOfMonth 都为null;
-
                 if (state == 0) {
 
                         Start = Start_year + "年" + " " + Start_monthOfYear + "月" + Start_dayOfMonth + "日";
@@ -131,7 +129,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                         spanBuilder.setSpan(new TextAppearanceSpan(null, 0, 30, null, null), 0, 5, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                         tv_startTime1.setText(spanBuilder);
                         tv_startTime1.setTextColor(getResources().getColor(R.color.black));
-
 
                 } else if (state == 1) {
 
