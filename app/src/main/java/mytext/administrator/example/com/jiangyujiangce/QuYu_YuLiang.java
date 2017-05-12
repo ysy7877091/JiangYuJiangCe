@@ -88,6 +88,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             RequestDataMethod(id,startTime,endTime);
 
             //超过一天
+
         } else {
             if (quYu_name.equals("全区")) {
                 progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
