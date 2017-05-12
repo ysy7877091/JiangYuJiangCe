@@ -51,7 +51,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
     private ImageView iv_sanJiao;
     private ImageView iv_souSuo;
     private TextView tv_quyu;
-
     private String ID;
     private String val;
     private MyProgressDialog ProgressDialog;
@@ -62,7 +61,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.lishijilu_layout);
-
 
         CommonMethod.setStatuColor(LiShi_ChaXun.this,R.color.white);
         init();
@@ -84,7 +82,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         iv_souSuo.setOnClickListener(this);
         tv_quyu.setOnClickListener(this);
     }
-
 
     private void SelectStartTime(final int state) {
 
