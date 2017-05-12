@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
@@ -22,18 +21,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javabeen.cn.JiangYuShuJu;
 import javabeen.cn.StringTemplate;
 
@@ -236,7 +229,6 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                     StringBuffer sb = new StringBuffer();
                     for (int i = 0; i < count1; i++) {
                         SoapObject soapProvince = (SoapObject) object.getProperty(i);
-                        //SoapObject soapProvince = (SoapObject) envelope.bodyIn;
                         sb.append(soapProvince.getProperty("TIME").toString() + ",");
                         if (i == count1 - 1) {
                             sb.append(soapProvince.getProperty("ValueX").toString());
