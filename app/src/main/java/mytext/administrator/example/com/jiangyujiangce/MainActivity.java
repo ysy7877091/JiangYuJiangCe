@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements PublicOneListInte
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         CommonMethod.setStatuColor(MainActivity.this,R.color.white);
-        //
+
         init();
     }
     private void init(){

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
@@ -21,12 +22,18 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import javabeen.cn.JiangYuShuJu;
 import javabeen.cn.StringTemplate;
 
@@ -39,7 +46,8 @@ import javabeen.cn.StringTemplate;
 public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tv_quYu_name;
-
+    private String StringNewTime;
+    private String agoTime24;
     private ImageView iv_fanhui_icon1;
     private String startTime;
     private String endTime;
@@ -47,8 +55,13 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
     private MyProgressDialog progressDialog = null;
     private List<JiangYuShuJu> list = new ArrayList<>();
     private String quYu_name;
-    private boolean isMore100=false;
+    private boolean isMore100 = false;
     private String id;
+    private boolean isMore300=false;
+    private long start_millionSeconds;
+    private long end_millionSeconds;
+    private Date datenewTime;
+    private Date dateTime24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +83,131 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
         quYu_name = getIntent().getStringExtra("Name");
         id = getIntent().getStringExtra("ID");
         tv_quYu_name.setText(quYu_name);
+        //24小时
+        if (startTime.equals(endTime)) {
+            RequestDataMethod(id,startTime,endTime);
 
-        if (quYu_name.equals("全区")) {
-            progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
-            new Thread(Get_CheckAllRainFallHistory_List).start();
-        }else {
-            progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
-            new Thread(Get_CheckRainFallHistory_List).start();
+            //超过一天
+        } else {
+            if (quYu_name.equals("全区")) {
+                progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
+                new Thread(Get_CheckAllRainFallHistory_List).start();
+            } else {
+                progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
+                new Thread(Get_CheckRainFallHistory_List).start();
+            }
         }
     }
+
+    private void RequestDataMethod(final String id,final String startTime,final String endTime) {
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        try {
+//        long start_millionSeconds = formatter.parse(startTime).getTime();//毫秒
+//            datenewTime = new Date(start_millionSeconds);
+//        long end_millionSeconds = formatter.parse(endTime).getTime()+24*60*60*1000;//毫秒
+//            dateTime24 = new Date(end_millionSeconds);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        StringNewTime = formatter.format(datenewTime);
+//        agoTime24 = formatter.format(dateTime24);
+
+        progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    // 命名空间
+                    String nameSpace = "http://tempuri.org/";
+                    // 调用的方法名称
+                    String methodName = "Get_CheckRainFallHistory_List";
+                    // EndPoint
+                    String endPoint = Path.get_ZanShibeidouPath();
+                    // SOAP Action
+                    String soapAction = "http://tempuri.org/Get_CheckRainFallHistory_List";
+                    // 指定WebService的命名空间和调用的方法名
+                    SoapObject rpc = new SoapObject(nameSpace, methodName);
+                    //设置需调用WebService接口需要传入的参数日期
+
+                    rpc.addProperty("id", id);
+                    rpc.addProperty("startTime", startTime);
+                    rpc.addProperty("endTime", endTime);
+                    // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                    SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+                    envelope.dotNet = true;
+                    envelope.setOutputSoapObject(rpc);
+
+                    HttpTransportSE ht = new HttpTransportSE(endPoint, 10000);
+                    ht.debug = true;
+                    Log.e("warn", "50");
+                    try {
+                        // 调用WebService
+                        ht.call(soapAction, envelope);
+                    } catch (Exception e) {
+                        Message msg = Message.obtain();
+                        msg.what = 0;
+                        handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
+                    }
+                    SoapObject object;
+                    // 开始调用远程方法
+                    object = (SoapObject) envelope.getResponse();
+                    // 得到服务器传回的数据 返回的数据时集合 每一个count是一个及集合的对象
+                    int count1 = object.getPropertyCount();
+                    if (count1 > 0) {
+                        StringBuffer sb = new StringBuffer();
+                        for (int i = 0; i < count1; i++) {
+
+                            SoapObject soapProvince = (SoapObject) object.getProperty(i);
+
+                            sb.append(soapProvince.getProperty("TIME").toString() + ",");
+                            if (i == count1 - 1) {
+                                sb.append(soapProvince.getProperty("ValueX").toString());
+                            } else {
+                                sb.append(soapProvince.getProperty("ValueX").toString() + "|");
+                            }
+                        }
+                        Log.e("warn", sb.toString());
+                        Message msg = Message.obtain();
+                        msg.what = 1;
+                        msg.obj = sb.toString();
+                        handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
+                    }
+                } catch (Exception e) {
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
+                }
+            }
+        }.start();
+    }
+
+    Handler handlerGet_24CheckRainFallHistory_List = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int i = msg.what;
+            if (i == 0) {
+                progressDialog.dismiss();
+                Toast.makeText(QuYu_YuLiang.this, "网络或服务器异常", Toast.LENGTH_SHORT).show();
+            } else if (i == 1) {
+                progressDialog.dismiss();
+                String str = (String) msg.obj;
+                Log.e("warn", str);
+                String[] objects = str.split("\\|");
+                for (int j = 0; j < objects.length; j++) {
+                    if (objects[j].length() > 0) {
+                        String[] values = objects[j].split(",");
+                        JiangYuShuJu jy = new JiangYuShuJu();
+                        jy.setTIME(values[0]);
+                        jy.setValueX(values[1]);
+                        list.add(jy);
+                    }
+                }
+                showData();
+            }
+        }
+    };
 
     Runnable Get_CheckRainFallHistory_List = new Runnable() {
         @Override
@@ -89,13 +218,13 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 // 调用的方法名称
                 String methodName = "Get_CheckRainFallHistory_List";
                 // EndPoint
-                String endPoint = "http://beidoujieshou.sytxmap.com:5963/GPSService.asmx";
+                String endPoint = Path.get_ZanShibeidouPath();
                 // SOAP Action
                 String soapAction = "http://tempuri.org/Get_CheckRainFallHistory_List";
                 // 指定WebService的命名空间和调用的方法名
                 SoapObject rpc = new SoapObject(nameSpace, methodName);
 
-                rpc.addProperty("id",id);
+                rpc.addProperty("id", id);
                 rpc.addProperty("startTime", startTime);
                 Log.e("warn", startTime);
                 rpc.addProperty("endTime", endTime);
@@ -107,6 +236,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 HttpTransportSE ht = new HttpTransportSE(endPoint, 10000);
                 ht.debug = true;
                 Log.e("warn", "4444");
+
                 try {
                     // 调用WebService
                     ht.call(soapAction, envelope);
@@ -120,6 +250,12 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 object = (SoapObject) envelope.getResponse();
                 // 得到服务器传回的数据 返回的数据时集合 每一个count是一个及集合的对象
                 int count1 = object.getPropertyCount();
+                if(count1==0){
+                    Message msg = Message.obtain();
+                    msg.what=2;
+                    handlerGet_CheckRainFallHistory_List.sendMessage(msg);
+                    return;
+                }
                 if (count1 > 0) {
                     StringBuffer sb = new StringBuffer();
                     for (int i = 0; i < count1; i++) {
@@ -153,6 +289,9 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             if (i == 0) {
                 progressDialog.dismiss();
                 Toast.makeText(QuYu_YuLiang.this, "网络或服务器异常", Toast.LENGTH_SHORT).show();
+            }else if(i==2){
+                Toast.makeText(getApplicationContext(),"无历史信息",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             } else if (i == 1) {
                 progressDialog.dismiss();
                 String str = (String) msg.obj;
@@ -180,7 +319,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 // 调用的方法名称
                 String methodName = "Get_CheckAllRainFallHistory_List";
                 // EndPoint
-                String endPoint = "http://beidoujieshou.sytxmap.com:5963/GPSService.asmx";
+                String endPoint = Path.get_ZanShibeidouPath();
                 // SOAP Action
                 String soapAction = "http://tempuri.org/Get_CheckAllRainFallHistory_List";
                 // 指定WebService的命名空间和调用的方法名
@@ -210,6 +349,12 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 object = (SoapObject) envelope.getResponse();
                 // 得到服务器传回的数据 返回的数据时集合 每一个count是一个及集合的对象
                 int count1 = object.getPropertyCount();
+                if (count1 == 0) {
+                    Message msg1 = Message.obtain();
+                    msg1.what = 2;
+                    handlerGet_CheckAllRainFallHistory_List.sendMessage(msg1);
+                    return;
+                }
                 if (count1 > 0) {
                     StringBuffer sb = new StringBuffer();
                     for (int i = 0; i < count1; i++) {
@@ -243,6 +388,10 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             if (i == 0) {
                 progressDialog.dismiss();
                 Toast.makeText(QuYu_YuLiang.this, "网络或服务器异常", Toast.LENGTH_SHORT).show();
+            } else if (i == 2) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "无历史信息", Toast.LENGTH_SHORT).show();
+
             } else if (i == 1) {
                 progressDialog.dismiss();
                 String str = (String) msg.obj;
@@ -261,7 +410,8 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
-    private void ColorMethod(float y,List<Integer> list){
+
+    private void ColorMethod(float y, List<Integer> list) {
         if (y > 300) {
             list.add(getResources().getColor(R.color.yl17));
         } else if (y >= 200) {
@@ -294,39 +444,41 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             list.add(getResources().getColor(R.color.yl03));
         } else if (y >= 1) {
             list.add(getResources().getColor(R.color.yl02));
-        }else if(y>=0){
+        } else if (y >= 0) {
             list.add(getResources().getColor(R.color.yl01));
         }
     }
 
-    private void showData(){
+    private void showData() {
 
-        if(list!=null&list.size()>0){
+        if (list != null & list.size() > 0) {
             List<Integer> list1 = new ArrayList<>();//装载柱状图颜色
             Float[] yl = new Float[list.size()];//雨量数据
             String[] appName = new String[list.size()];//时间
             float start = 0f;
             ArrayList<BarEntry> yVals1 = new ArrayList<>();
             barChart.getXAxis().setAxisMinValue(start);
-            int len = StringTemplate.YLStringTemplate.length+1;//数据长度
+            int len = StringTemplate.YLStringTemplate.length + 1;//数据长度
             int[] myColors = new int[len];//取颜色长度
             String[] lbls = new String[len];//取比量值长度
             for (int i = 0; i < len; i++) {//取数据
-                if(i==len-1){
+                if (i == len - 1) {
                     lbls[i] = "警戒线";
-                    myColors[i] = Color.rgb(255,33,33);
-                }else{
+                    myColors[i] = Color.rgb(255, 33, 33);
+                } else {
                     lbls[i] = StringTemplate.YLStringTemplate[i];
                     myColors[i] = ColorTemplate.YL_Simaple[i];
                 }
             }
-            for (int i = 0; i<list.size(); i++) {
-                if (list.size()> 1) {
-                    appName[list.size()-1-i] =list.get(i).getTIME();//时间
-                    yl[i] = Float.parseFloat(list.get(list.size()-1-i).getValueX());//数据
-                    if(yl[i]>=100){isMore100=true;}
-                    yVals1.add(new BarEntry(yl[i],i));
-                    ColorMethod(yl[i],list1);
+            for (int i = 0; i < list.size(); i++) {
+                if (list.size() > 1) {
+                    appName[list.size() - 1 - i] = list.get(i).getTIME();//时间
+                    yl[i] = Float.parseFloat(list.get(list.size() - 1 - i).getValueX());//数据
+                    if (yl[i] >= 100) {
+                        isMore100 = true;
+                    }
+                    yVals1.add(new BarEntry(yl[i], i));
+                    ColorMethod(yl[i], list1);
                 }
             }
             barChart.setDrawBarShadow(false);
@@ -359,15 +511,15 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             leftAxis.setSpaceTop(15f);
             leftAxis.setAxisMinValue(0f);
 
-            if(isMore100){
+            if (isMore100) {
                 //可以设置一条警戒线，如下：
-                LimitLine ll = new LimitLine(2,"");//第一个参数为警戒线在坐标轴的位置，第二个参数为警戒线描述
-                ll.setLineColor(Color.rgb(255,33,33));
+                LimitLine ll = new LimitLine(2, "");//第一个参数为警戒线在坐标轴的位置，第二个参数为警戒线描述
+                ll.setLineColor(Color.rgb(255, 33, 33));
                 ll.setLineWidth(1f);
                 ll.setTextColor(Color.GRAY);
                 ll.setTextSize(12f);
                 leftAxis.addLimitLine(ll);
-                isMore100 =false;
+                isMore100 = false;
             }
             Legend l = barChart.getLegend();//设置比例图
             l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
@@ -388,7 +540,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 set1.setBarSpacePercent(30f);//设置柱间空白的宽度
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set1);
-                BarData data = new BarData(appName,dataSets);
+                BarData data = new BarData(appName, dataSets);
                 data.setValueTextSize(7f);
                 data.setDrawValues(true);
                 data.setValueTextColor(Color.BLACK);
@@ -396,6 +548,17 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

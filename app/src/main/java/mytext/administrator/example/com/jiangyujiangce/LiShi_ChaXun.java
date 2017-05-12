@@ -70,7 +70,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
     private void init() {
 
         iv_fanhui_icon = (ImageView) findViewById(R.id.iv_fanhui_icon);
-        iv_lishi_icon = (ImageView) findViewById(R.id.iv_lishi_icon);
         tv_startTime1 = (TextView) findViewById(tv_startTime);
         tv_endTime1 = (TextView) findViewById(tv_endTime);
         iv_sanJiao = (ImageView) findViewById(R.id.iv_sanJiao);
@@ -78,7 +77,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         tv_quyu = (TextView) findViewById(R.id.tv_quyu);
 
         iv_fanhui_icon.setOnClickListener(this);
-        iv_lishi_icon.setOnClickListener(this);
         tv_startTime1.setOnClickListener(this);
         tv_endTime1.setOnClickListener(this);
         iv_sanJiao.setOnClickListener(this);
@@ -272,8 +270,6 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_fanhui_icon:finish();break;
             case R.id.tv_quyu:
                 SelectQuYu();
-                break;
-            case R.id.iv_lishi_icon:
                 break;
             case R.id.iv_sanJiao:
                 SelectQuYu();

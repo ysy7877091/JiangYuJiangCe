@@ -42,7 +42,7 @@
                 android:textSize="20sp" />
         </RelativeLayout>
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/iv_lishi_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_marginRight="10dp"
             android:clickable="true"
             android:scaleType="fitXY"
-            android:src="@mipmap/lishi_icon" />
+            android:src="@mipmap/lishi_icon" />-->
     </RelativeLayout>
     <ImageView
         android:layout_width="match_parent"
