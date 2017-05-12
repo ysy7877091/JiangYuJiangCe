@@ -43,6 +43,7 @@
                 android:background="@drawable/edittext_biankuang"
                 android:id="@+id/ED_Username"
                 android:hint="请输入用户名"
+                android:password="true"
                 android:paddingLeft="60dp"
                 android:layout_centerVertical="true"
                 />
@@ -67,6 +68,7 @@
                 android:background="@drawable/edittext_biankuang"
                 android:id="@+id/ED_Paqssword"
                 android:hint="请输入密码"
+                android:password="true"
                 android:paddingLeft="60dp"
                 android:layout_centerVertical="true"
                 />

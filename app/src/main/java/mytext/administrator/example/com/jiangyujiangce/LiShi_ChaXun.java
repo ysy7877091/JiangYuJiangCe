@@ -155,6 +155,10 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
     private void SelectQuYu() {
+        if(arr_Name!=null&&arr_Name.length>1){
+            selectDialog();
+            return;
+        }
         ProgressDialog = new MyProgressDialog(LiShi_ChaXun.this,false,"加载中...");
         new Thread(networkGetYuLiangInfor).start();
     }
@@ -217,6 +221,8 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+    private String arr_Name[];
+    private String arr_ID[] ;
     Handler handlerGetYuLiangList = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -229,8 +235,8 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
             } else {
                 cancelDialg();
                 String[] objects = val.split("\\|");
-                final String arr_Name[] = new String[objects.length+1];
-                final String arr_ID[] = new String[objects.length+1];
+                arr_Name = new String[objects.length+1];
+                arr_ID = new String[objects.length+1];
                 for (int i = 0; i < objects.length; i++) {
                     if (objects[i].length() > 0) {
                         String[] values = objects[i].split(",");
@@ -242,22 +248,25 @@ public class LiShi_ChaXun extends AppCompatActivity implements View.OnClickListe
                 }
                 arr_Name[0] = "全区";
                 arr_ID[0]="";
-                AlertDialog.Builder builder = new AlertDialog.Builder(LiShi_ChaXun.this);
-                builder.setTitle("请选择");
-                builder.setSingleChoiceItems(arr_Name, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String val = arr_Name[i];
-                        tv_quyu.setText(val);
-                        tv_quyu.setTextColor(getResources().getColor(R.color.black));
-                         ID=arr_ID[i];
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.show();
+                selectDialog();
             }
         }
     };
+    private void selectDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(LiShi_ChaXun.this);
+        builder.setTitle("请选择");
+        builder.setSingleChoiceItems(arr_Name, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String val = arr_Name[i];
+                tv_quyu.setText(val);
+                tv_quyu.setTextColor(getResources().getColor(R.color.black));
+                ID=arr_ID[i];
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
     private void cancelDialg(){
         if(ProgressDialog!=null){
             ProgressDialog.dismiss();
