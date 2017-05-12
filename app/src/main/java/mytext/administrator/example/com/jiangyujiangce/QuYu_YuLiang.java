@@ -46,8 +46,6 @@ import javabeen.cn.StringTemplate;
 public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tv_quYu_name;
-    private String StringNewTime;
-    private String agoTime24;
     private ImageView iv_fanhui_icon1;
     private String startTime;
     private String endTime;
@@ -57,11 +55,6 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
     private String quYu_name;
     private boolean isMore100 = false;
     private String id;
-    private boolean isMore300=false;
-    private long start_millionSeconds;
-    private long end_millionSeconds;
-    private Date datenewTime;
-    private Date dateTime24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +76,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
         quYu_name = getIntent().getStringExtra("Name");
         id = getIntent().getStringExtra("ID");
         tv_quYu_name.setText(quYu_name);
-        //24小时
-        if (startTime.equals(endTime)) {
-            RequestDataMethod(id,startTime,endTime);
 
-            //超过一天
-        } else {
             if (quYu_name.equals("全区")) {
                 progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
                 new Thread(Get_CheckAllRainFallHistory_List).start();
@@ -96,118 +84,7 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
                 new Thread(Get_CheckRainFallHistory_List).start();
             }
-        }
     }
-
-    private void RequestDataMethod(final String id,final String startTime,final String endTime) {
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        try {
-//        long start_millionSeconds = formatter.parse(startTime).getTime();//毫秒
-//            datenewTime = new Date(start_millionSeconds);
-//        long end_millionSeconds = formatter.parse(endTime).getTime()+24*60*60*1000;//毫秒
-//            dateTime24 = new Date(end_millionSeconds);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        StringNewTime = formatter.format(datenewTime);
-//        agoTime24 = formatter.format(dateTime24);
-
-        progressDialog = new MyProgressDialog(QuYu_YuLiang.this, false, "正在加载中...");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    // 命名空间
-                    String nameSpace = "http://tempuri.org/";
-                    // 调用的方法名称
-                    String methodName = "Get_CheckRainFallHistory_List";
-                    // EndPoint
-                    String endPoint = Path.get_ZanShibeidouPath();
-                    // SOAP Action
-                    String soapAction = "http://tempuri.org/Get_CheckRainFallHistory_List";
-                    // 指定WebService的命名空间和调用的方法名
-                    SoapObject rpc = new SoapObject(nameSpace, methodName);
-                    //设置需调用WebService接口需要传入的参数日期
-
-                    rpc.addProperty("id", id);
-                    rpc.addProperty("startTime", startTime);
-                    rpc.addProperty("endTime", endTime);
-                    // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
-                    SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
-                    envelope.dotNet = true;
-                    envelope.setOutputSoapObject(rpc);
-
-                    HttpTransportSE ht = new HttpTransportSE(endPoint, 10000);
-                    ht.debug = true;
-                    Log.e("warn", "50");
-                    try {
-                        // 调用WebService
-                        ht.call(soapAction, envelope);
-                    } catch (Exception e) {
-                        Message msg = Message.obtain();
-                        msg.what = 0;
-                        handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
-                    }
-                    SoapObject object;
-                    // 开始调用远程方法
-                    object = (SoapObject) envelope.getResponse();
-                    // 得到服务器传回的数据 返回的数据时集合 每一个count是一个及集合的对象
-                    int count1 = object.getPropertyCount();
-                    if (count1 > 0) {
-                        StringBuffer sb = new StringBuffer();
-                        for (int i = 0; i < count1; i++) {
-
-                            SoapObject soapProvince = (SoapObject) object.getProperty(i);
-
-                            sb.append(soapProvince.getProperty("TIME").toString() + ",");
-                            if (i == count1 - 1) {
-                                sb.append(soapProvince.getProperty("ValueX").toString());
-                            } else {
-                                sb.append(soapProvince.getProperty("ValueX").toString() + "|");
-                            }
-                        }
-                        Log.e("warn", sb.toString());
-                        Message msg = Message.obtain();
-                        msg.what = 1;
-                        msg.obj = sb.toString();
-                        handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
-                    }
-                } catch (Exception e) {
-                    Message msg = Message.obtain();
-                    msg.what = 0;
-                    handlerGet_24CheckRainFallHistory_List.sendMessage(msg);
-                }
-            }
-        }.start();
-    }
-
-    Handler handlerGet_24CheckRainFallHistory_List = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            int i = msg.what;
-            if (i == 0) {
-                progressDialog.dismiss();
-                Toast.makeText(QuYu_YuLiang.this, "网络或服务器异常", Toast.LENGTH_SHORT).show();
-            } else if (i == 1) {
-                progressDialog.dismiss();
-                String str = (String) msg.obj;
-                Log.e("warn", str);
-                String[] objects = str.split("\\|");
-                for (int j = 0; j < objects.length; j++) {
-                    if (objects[j].length() > 0) {
-                        String[] values = objects[j].split(",");
-                        JiangYuShuJu jy = new JiangYuShuJu();
-                        jy.setTIME(values[0]);
-                        jy.setValueX(values[1]);
-                        list.add(jy);
-                    }
-                }
-                showData();
-            }
-        }
-    };
 
     Runnable Get_CheckRainFallHistory_List = new Runnable() {
         @Override
@@ -224,10 +101,10 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
                 // 指定WebService的命名空间和调用的方法名
                 SoapObject rpc = new SoapObject(nameSpace, methodName);
 
-                rpc.addProperty("id", id);
-                rpc.addProperty("startTime", startTime);
+                rpc.addProperty("id",id);
+                rpc.addProperty("startTime",startTime);
                 Log.e("warn", startTime);
-                rpc.addProperty("endTime", endTime);
+                rpc.addProperty("endTime",endTime);
                 Log.e("warn", endTime);
                 // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
                 SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
@@ -568,4 +445,3 @@ public class QuYu_YuLiang extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
-
